@@ -22,9 +22,6 @@ public class ThrowsValidationHandler implements ValidationHandler {
         } catch (final Exception ex){
             throw DomainException.with(new Error(ex.getMessage()));
         }
-
-
-
         return this;
     }
 

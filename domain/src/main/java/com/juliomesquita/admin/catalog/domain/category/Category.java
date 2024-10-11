@@ -7,7 +7,7 @@ import com.juliomesquita.admin.catalog.domain.commom.validation.ValidationHandle
 import java.time.Instant;
 import java.util.UUID;
 
-public class Category extends AggregateRoot<CategoryId> {
+public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     private String name;
     private String description;
     private boolean active;
@@ -103,5 +103,17 @@ public class Category extends AggregateRoot<CategoryId> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+
+    @Override
+    public Category clone() {
+        try {
+            Category clone = (Category) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
