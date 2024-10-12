@@ -5,7 +5,6 @@ import com.juliomesquita.admin.catalog.domain.commom.abstractions.AggregateRoot;
 import com.juliomesquita.admin.catalog.domain.commom.validation.ValidationHandler;
 
 import java.time.Instant;
-import java.util.UUID;
 
 public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     private String name;
@@ -14,6 +13,29 @@ public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
+
+    public static Category with(final Category aCategory) {
+        return with(
+                aCategory.getId(),
+                aCategory.getName(),
+                aCategory.getDescription(),
+                aCategory.isActive(),
+                aCategory.getCreatedAt(),
+                aCategory.getUpdatedAt(),
+                aCategory.getDeletedAt());
+    }
+
+    public static Category with(
+            final CategoryId aId,
+            final String aName,
+            final String aDescription,
+            final boolean isActive,
+            final Instant aCreatedDate,
+            final Instant aUpdatedDate,
+            final Instant aDeletedDate
+    ) {
+        return new Category(aId, aName, aDescription, isActive, aCreatedDate, aUpdatedDate, aDeletedDate);
+    }
 
     public static Category newCategory(
             final String aName, final String aDescription, final boolean aActive
