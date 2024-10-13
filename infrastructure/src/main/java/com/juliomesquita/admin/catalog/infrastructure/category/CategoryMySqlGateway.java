@@ -7,10 +7,18 @@ import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQu
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
+import com.juliomesquita.admin.catalog.infrastructure.utils.SpecificationUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.juliomesquita.admin.catalog.infrastructure.utils.SpecificationUtils.like;
 
 @Service
 public class CategoryMySqlGateway implements CategoryGateway {
@@ -28,22 +36,52 @@ public class CategoryMySqlGateway implements CategoryGateway {
     }
 
     @Override
-    public Optional<Category> findById(CategoryId categoryId) {
-        return Optional.empty();
+    public Optional<Category> findById(final CategoryId categoryId) {
+        return this.categoryRepository
+                .findById(categoryId.getValue())
+                .map(CategoryEntity::toAggregate);
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
+    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+        final PageRequest pageRequest = PageRequest.of(
+                aQuery.currentPage(),
+                aQuery.itemsPerPage(),
+                Sort.by(Sort.Direction.fromString(aQuery.direction()), aQuery.sort())
+        );
+
+        final Specification<CategoryEntity> specification = Optional.ofNullable(aQuery.terms())
+                .filter(str -> !str.isBlank())
+                .map(str -> {
+                    final Specification<CategoryEntity> nameLike = like("name", str);
+                    final Specification<CategoryEntity> descriptionLike = like("description", str);
+                    return nameLike.or(descriptionLike);
+                })
+                .orElse(null);
+
+
+        final Page<CategoryEntity> categoryPageable = this.categoryRepository.findAll(specification, pageRequest);
+        return new Pagination<>(
+                categoryPageable.map(CategoryEntity::toAggregate).toList(),
+                categoryPageable.getNumber(),
+                categoryPageable.getSize(),
+                categoryPageable.getTotalElements(),
+                (int) categoryPageable.getTotalElements() / categoryPageable.getSize()
+        );
     }
 
     @Override
-    public Category update(Category aCategory) {
-        return null;
+    public Category update(final Category aCategory) {
+        return this.categoryRepository
+                .save(CategoryEntity.from(aCategory))
+                .toAggregate();
     }
 
     @Override
     public void deleteById(CategoryId categoryId) {
-
+        String anId = categoryId.getValue();
+        if (this.categoryRepository.existsById(anId)) {
+            this.categoryRepository.deleteById(anId);
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.juliomesquita.admin.catalog.domain.commom.abstractions.AggregateRoot;
 import com.juliomesquita.admin.catalog.domain.commom.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     private String name;
@@ -94,8 +95,8 @@ public class Category extends AggregateRoot<CategoryId> implements Cloneable {
         this.name = aName;
         this.description = aDescription;
         this.active = isActive;
-        this.createdAt = aCreatedDate;
-        this.updatedAt = aUpdatedDate;
+        this.createdAt = Objects.requireNonNull(aCreatedDate, "created at should not be null");
+        this.updatedAt = Objects.requireNonNull(aUpdatedDate, "updated at should not be null");
         this.deletedAt = aDeletedDate;
     }
 

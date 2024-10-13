@@ -30,6 +30,7 @@ public @interface MySqlGatewayTest {
                     .getApplicationContext(extensionContext)
                     .getBeansOfType(CrudRepository.class)
                     .values();
+            this.cleanUp(repositories);
         }
 
         private void cleanUp(final Collection<CrudRepository> repositories) {
