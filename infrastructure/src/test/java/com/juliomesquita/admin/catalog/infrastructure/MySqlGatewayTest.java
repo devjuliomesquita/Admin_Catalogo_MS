@@ -18,7 +18,7 @@ import java.util.Collection;
 @Inherited
 @ActiveProfiles("test")
 @ComponentScan(includeFilters = {
-        @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*MySQLGateway")
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MySQLGateway]")
 })
 @DataJpaTest
 @ExtendWith(MySqlGatewayTest.CleanUpExtensions.class)
@@ -30,7 +30,6 @@ public @interface MySqlGatewayTest {
                     .getApplicationContext(extensionContext)
                     .getBeansOfType(CrudRepository.class)
                     .values();
-
         }
 
         private void cleanUp(final Collection<CrudRepository> repositories) {

@@ -21,6 +21,7 @@ spring:
 #      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate.generate_statistics: false
       hibernate.connection.provider_disables_autocommit: true
+      hibernate.globally_quoted_identifiers: true
   flyway:
     baseline-on-migrate: true
     enabled: true
@@ -30,6 +31,7 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     url: ${spring.datasource.url}
+
 
 server:
   port: 8080

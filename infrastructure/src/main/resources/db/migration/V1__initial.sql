@@ -3,6 +3,7 @@ create table tb_categories (
     category_name varchar(255) not null,
     category_description varchar(4000),
     category_active boolean not null default true,
-    category_created_at datetime(6) not null,
-    category_updated_at datetime(6) not null,
-    category_deleted_at datetime(6))
+    category_created_at timestamp(6) not null,
+    category_updated_at timestamp(6) not null,
+    category_deleted_at timestamp(6)
+);

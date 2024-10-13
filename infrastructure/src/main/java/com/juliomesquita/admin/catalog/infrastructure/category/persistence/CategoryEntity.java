@@ -25,13 +25,13 @@ public class CategoryEntity {
     @Column(name = "category_active", nullable = false)
     private boolean active;
 
-    @Column(name = "category_created_at", nullable = false, columnDefinition = "DATETIME(6)")
+    @Column(name = "category_created_at", nullable = false)
     private Instant createdAt;
 
-    @Column(name = "category_updated_at", nullable = false, columnDefinition = "DATETIME(6)")
+    @Column(name = "category_updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "category_deleted_at", columnDefinition = "DATETIME(6)")
+    @Column(name = "category_deleted_at")
     private Instant deletedAt;
 
     public static CategoryEntity from(final Category aCategory) {
