@@ -47,6 +47,9 @@ public class CategoryUseCaseConfig {
 
     @Bean
     public DeleteCategoryUseCase deleteCategoryUseCase() {
+        System.out.println(categoryGateway);
         return new DefaultDeleteCategoryUseCase(categoryGateway);
     }
+
+
 }
