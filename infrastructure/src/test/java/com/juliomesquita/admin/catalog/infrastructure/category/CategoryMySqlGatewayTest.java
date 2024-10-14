@@ -4,7 +4,7 @@ import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
-import com.juliomesquita.admin.catalog.infrastructure.MySqlGatewayTest;
+import com.juliomesquita.admin.catalog.MySqlGatewayTest;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Test;
