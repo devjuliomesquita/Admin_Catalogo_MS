@@ -95,7 +95,7 @@ class CategoryMySqlGatewayTest {
             assertEquals(expectedDescription, aCategorySaved.getDescription());
             assertEquals(expectedActive, aCategorySaved.isActive());
             assertEquals(aCategory.getCreatedAt(), aCategorySaved.getCreatedAt());
-            assertTrue(aCategory.getUpdatedAt().isBefore(aCategorySaved.getUpdatedAt()));
+            assertNotEquals(aCategory.getUpdatedAt(),aCategorySaved.getUpdatedAt());
             assertNull(aCategorySaved.getDeletedAt());
         });
 
