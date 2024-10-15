@@ -6,6 +6,7 @@ import com.juliomesquita.admin.catalog.application.usecases.category.create.Crea
 import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryUseCase;
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
+import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -52,10 +53,10 @@ public class CreateCategoryUseCaseIT {
         assertNotNull(actualOutput.id());
         assertEquals(1, this.categoryRepository.count());
 
-        final Category categoryRetrieved = this.categoryGateway.findById(actualOutput.id()).get();
+        final Category categoryRetrieved = this.categoryGateway.findById(CategoryId.from(actualOutput.id())).get();
 
         assertAll("Verify attributes category", () -> {
-            assertEquals(actualOutput.id(), categoryRetrieved.getId());
+            assertEquals(actualOutput.id(), categoryRetrieved.getId().getValue());
             assertEquals(expectedName, categoryRetrieved.getName());
             assertEquals(expectedDescription, categoryRetrieved.getDescription());
             assertEquals(expectedIsActive, categoryRetrieved.isActive());
@@ -114,10 +115,10 @@ public class CreateCategoryUseCaseIT {
         //verify database
         assertEquals(1, this.categoryRepository.count());
 
-        final Category categoryRetrieved = this.categoryGateway.findById(actualOutput.id()).get();
+        final Category categoryRetrieved = this.categoryGateway.findById(CategoryId.from(actualOutput.id())).get();
 
         assertAll("Verify attributes category", () -> {
-            assertEquals(actualOutput.id(), categoryRetrieved.getId());
+            assertEquals(actualOutput.id(), categoryRetrieved.getId().getValue());
             assertEquals(expectedName, categoryRetrieved.getName());
             assertEquals(expectedDescription, categoryRetrieved.getDescription());
             assertFalse(categoryRetrieved.isActive());

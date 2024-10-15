@@ -1,16 +1,22 @@
 package com.juliomesquita.admin.catalog.infrastructure.api.controllers;
 
+import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryCommand;
+import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryOutput;
 import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.delete.DeleteCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.getbyid.GetCategoryByIdUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryUseCase;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
+import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.api.CategoryAPI;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryAPIInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.Objects;
+import java.util.function.Function;
 
 @RestController
 public class CategoryController implements CategoryAPI {
@@ -36,8 +42,14 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> createCategory() {
-        return null;
+    public ResponseEntity<?> createCategory(final CreateCategoryAPIInput input) {
+        final CreateCategoryCommand command = CreateCategoryAPIInput.toApp(input);
+        final Function<Notification, ResponseEntity<?>> onError =
+                notification -> ResponseEntity.unprocessableEntity().body(notification);
+        final Function<CreateCategoryOutput, ResponseEntity<?>> onSuccess =
+                output -> ResponseEntity.created(URI.create("/categories/" + output.id())).body(output);
+
+        return this.createCategoryUseCase.execute(command).fold(onError, onSuccess);
     }
 
     @Override

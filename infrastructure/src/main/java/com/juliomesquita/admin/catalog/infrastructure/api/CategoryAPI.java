@@ -1,23 +1,20 @@
 package com.juliomesquita.admin.catalog.infrastructure.api;
 
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryAPIInput;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "/categories")
 @Tag(name = "Categories")
 public interface CategoryAPI {
 
     @PostMapping(
-            value = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<?> createCategory();
+    ResponseEntity<?> createCategory(@RequestBody CreateCategoryAPIInput input);
 
     @GetMapping
     ResponseEntity<Pagination<?>> ListCategories(
