@@ -11,7 +11,7 @@ public record ListCategoriesOutput(
         boolean active,
         Instant createdAt
 ) {
-    public static ListCategoriesOutput from(final Category aCategory){
+    public static ListCategoriesOutput from(final Category aCategory) {
         return new ListCategoriesOutput(
                 aCategory.getId().getValue(),
                 aCategory.getName(),

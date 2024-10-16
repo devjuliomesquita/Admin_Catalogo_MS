@@ -8,6 +8,7 @@ import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
+import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -16,15 +17,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -70,10 +66,10 @@ public class UpdateCategoryUseCaseIT {
         verify(this.categoryGateway, times(1)).findById(Mockito.eq(expectedId));
         verify(this.categoryGateway, times(1)).update(any());
 
-        final Category categoryRetrieved = this.categoryGateway.findById(response.id()).get();
+        final Category categoryRetrieved = this.categoryGateway.findById(CategoryId.from(response.id())).get();
 
         assertAll("Verify attributes category", () -> {
-            assertEquals(response.id(), categoryRetrieved.getId());
+            assertEquals(response.id(), categoryRetrieved.getId().getValue());
             assertEquals(expectedName, categoryRetrieved.getName());
             assertEquals(expectedDescription, categoryRetrieved.getDescription());
             assertEquals(expectedIsActive, categoryRetrieved.isActive());
@@ -171,7 +167,7 @@ public class UpdateCategoryUseCaseIT {
         verify(this.categoryGateway, times(1)).findById(Mockito.eq(expectedId));
         verify(this.categoryGateway, times(1)).update(any());
 
-        final Category categoryRetrieved = this.categoryGateway.findById(response.id()).get();
+        final Category categoryRetrieved = this.categoryGateway.findById(CategoryId.from(response.id())).get();
 
         assertAll("Verify attributes category", () -> {
             assertEquals(aCategory.getId(), categoryRetrieved.getId());
@@ -250,7 +246,7 @@ public class UpdateCategoryUseCaseIT {
         final boolean expectedIsActive = true;
         final UUID uuidMock = UUID.randomUUID();
         final String expectedMessageError = "Category with ID %s was not found".formatted(uuidMock);
-        final int expectedMessageErrorCount = 1;
+        final int expectedMessageErrorCount = 0;
 
         final UpdateCategoryCommand aCommand = UpdateCategoryCommand.with(
                 uuidMock.toString(),
@@ -261,8 +257,8 @@ public class UpdateCategoryUseCaseIT {
 
 
         //then
-        final DomainException domainException = assertThrows(DomainException.class, () -> this.useCase.execute(aCommand));
-        assertEquals(expectedMessageError, domainException.getErrors().get(0).message());
+        final NotFoundException domainException = assertThrows(NotFoundException.class, () -> this.useCase.execute(aCommand));
+        assertEquals(expectedMessageError, domainException.getMessage());
         assertEquals(expectedMessageErrorCount, domainException.getErrors().size());
 
         verify(this.categoryGateway, times(1)).findById(eq(CategoryId.from(uuidMock)));

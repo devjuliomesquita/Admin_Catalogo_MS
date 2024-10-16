@@ -5,18 +5,23 @@ import com.juliomesquita.admin.catalog.application.usecases.category.create.Crea
 import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.delete.DeleteCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.getbyid.GetCategoryByIdUseCase;
+import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesOutput;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesUseCase;
+import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryCommand;
+import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryOutput;
 import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryUseCase;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.api.CategoryAPI;
-import com.juliomesquita.admin.catalog.infrastructure.api.models.CategoryAPIOutput;
-import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryAPIInput;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.CategoryResponse;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryRequest;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.ListCategoriesResponse;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.UpdateCategoryRequest;
 import com.juliomesquita.admin.catalog.infrastructure.api.presenters.CategoryApiPresenter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.event.TextEvent;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -45,8 +50,8 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> createCategory(final CreateCategoryAPIInput input) {
-        final CreateCategoryCommand command = CreateCategoryAPIInput.toApp(input);
+    public ResponseEntity<?> createCategory(final CreateCategoryRequest input) {
+        final CreateCategoryCommand command = CreateCategoryRequest.toApp(input);
         final Function<Notification, ResponseEntity<?>> onError =
                 notification -> ResponseEntity.unprocessableEntity().body(notification);
         final Function<CreateCategoryOutput, ResponseEntity<?>> onSuccess =
@@ -56,15 +61,40 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<CategoryAPIOutput> getCategoryById(final String id) {
-        final CategoryAPIOutput response = CategoryApiPresenter.present
+    public ResponseEntity<CategoryResponse> getCategoryById(final String id) {
+        final CategoryResponse response = CategoryApiPresenter.presentSimple
                 .compose(this.getCategoryByIdUseCase::execute)
                 .apply(id);
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<Pagination<?>> ListCategories(String search, int currentPage, int itemsPerPage, String sort, String direction) {
-        return null;
+    public ResponseEntity<Pagination<ListCategoriesResponse>> ListCategories(
+            final String search,
+            final int currentPage,
+            final int itemsPerPage,
+            final String sort,
+            final String direction
+    ) {
+        Pagination<ListCategoriesResponse> response = this.listCategoriesUseCase
+                .execute(new CategorySearchQuery(currentPage, itemsPerPage, search, sort, direction))
+                .map(CategoryApiPresenter.presentList);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<?> updateCategory(final String id, final UpdateCategoryRequest input) {
+        final UpdateCategoryCommand aCommand = UpdateCategoryRequest.toApp(id, input);
+        final Function<Notification, ResponseEntity<?>> onError =
+                notification -> ResponseEntity.unprocessableEntity().body(notification);
+        final Function<UpdateCategoryOutput, ResponseEntity<?>> onSuccess =
+                ResponseEntity::ok;
+        return this.updateCategoryUseCase.execute(aCommand).fold(onError, onSuccess);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteCategory(final String id) {
+        this.deleteCategoryUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }
