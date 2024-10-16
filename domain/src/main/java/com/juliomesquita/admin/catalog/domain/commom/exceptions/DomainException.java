@@ -15,7 +15,7 @@ public class DomainException extends NoStackTraceException {
         return new DomainException("", aErrors);
     }
 
-    private DomainException(final String aMassege, final List<Error> aErrors) {
+    protected DomainException(final String aMassege, final List<Error> aErrors) {
         super(aMassege);
         this.errors = aErrors;
     }

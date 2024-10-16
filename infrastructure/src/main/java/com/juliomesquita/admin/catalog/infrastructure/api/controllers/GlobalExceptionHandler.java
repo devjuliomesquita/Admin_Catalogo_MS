@@ -1,7 +1,9 @@
 package com.juliomesquita.admin.catalog.infrastructure.api.controllers;
 
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
+import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Error;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DomainException.class)
     public ResponseEntity<?> handleDomainException(final DomainException exception) {
         return ResponseEntity.unprocessableEntity()
+                .body(ApiError.from(exception));
+    }
+
+    @ExceptionHandler(value = NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(final NotFoundException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.from(exception));
     }
 

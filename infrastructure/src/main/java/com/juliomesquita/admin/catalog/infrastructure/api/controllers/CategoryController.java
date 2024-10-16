@@ -10,10 +10,13 @@ import com.juliomesquita.admin.catalog.application.usecases.category.update.Upda
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.api.CategoryAPI;
+import com.juliomesquita.admin.catalog.infrastructure.api.models.CategoryAPIOutput;
 import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryAPIInput;
+import com.juliomesquita.admin.catalog.infrastructure.api.presenters.CategoryApiPresenter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.awt.event.TextEvent;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -50,6 +53,14 @@ public class CategoryController implements CategoryAPI {
                 output -> ResponseEntity.created(URI.create("/categories/" + output.id())).body(output);
 
         return this.createCategoryUseCase.execute(command).fold(onError, onSuccess);
+    }
+
+    @Override
+    public ResponseEntity<CategoryAPIOutput> getCategoryById(final String id) {
+        final CategoryAPIOutput response = CategoryApiPresenter.present
+                .compose(this.getCategoryByIdUseCase::execute)
+                .apply(id);
+        return ResponseEntity.ok(response);
     }
 
     @Override

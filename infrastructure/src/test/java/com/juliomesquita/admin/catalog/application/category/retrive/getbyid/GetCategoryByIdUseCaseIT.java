@@ -7,6 +7,7 @@ import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
+import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -72,13 +73,13 @@ public class GetCategoryByIdUseCaseIT {
         assertEquals(0, this.categoryRepository.count());
 
         //given
-        final CategoryId expectedId = CategoryId.from(UUID.randomUUID());
-        final String expectedMessageError = "Category not found.";
-        final int expectedMessageErrorCount = 1;
+        final CategoryId expectedId = CategoryId.from("96cf5faa-5921-449a-b3a6-dae04cf7cdea");
+        final String expectedMessageError = "Category with ID 96cf5faa-5921-449a-b3a6-dae04cf7cdea was not found";
+        final int expectedMessageErrorCount = 0;
 
         //then
-        final DomainException domainException = assertThrows(DomainException.class, () -> this.useCase.execute(expectedId.getValue()));
-        assertEquals(expectedMessageError, domainException.getErrors().get(0).message());
+        final DomainException domainException = assertThrows(NotFoundException.class, () -> this.useCase.execute(expectedId.getValue()));
+        assertEquals(expectedMessageError, domainException.getMessage());
         assertEquals(expectedMessageErrorCount, domainException.getErrors().size());
         verify(this.categoryGateway, times(1)).findById(eq(expectedId));
     }
