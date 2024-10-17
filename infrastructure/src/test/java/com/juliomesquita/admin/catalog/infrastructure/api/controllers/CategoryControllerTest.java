@@ -17,7 +17,7 @@ import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundExceptio
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Error;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
-import com.juliomesquita.admin.catalog.infrastructure.ControllerTest;
+import com.juliomesquita.admin.catalog.ControllerTest;
 import com.juliomesquita.admin.catalog.infrastructure.api.CategoryAPI;
 import com.juliomesquita.admin.catalog.infrastructure.api.models.CreateCategoryRequest;
 import com.juliomesquita.admin.catalog.infrastructure.api.models.UpdateCategoryRequest;

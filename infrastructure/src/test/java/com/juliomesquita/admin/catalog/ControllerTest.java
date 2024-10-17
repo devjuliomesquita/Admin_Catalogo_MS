@@ -1,4 +1,4 @@
-package com.juliomesquita.admin.catalog.infrastructure;
+package com.juliomesquita.admin.catalog;
 
 import com.juliomesquita.admin.catalog.infrastructure.configuration.mapper.ObjectMapperConfig;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
