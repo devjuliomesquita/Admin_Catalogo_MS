@@ -5,6 +5,7 @@ import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
+import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -190,7 +191,7 @@ class DefaultUpdateCategoryUseCaseTest {
         final boolean expectedIsActive = true;
         final UUID uuidMock = UUID.randomUUID();
         final String expectedMessageError = "Category with ID %s was not found".formatted(uuidMock);
-        final int expectedMessageErrorCount = 1;
+        final int expectedMessageErrorCount = 0;
 
         final UpdateCategoryCommand aCommand = UpdateCategoryCommand.with(
                 uuidMock.toString(),
@@ -203,8 +204,8 @@ class DefaultUpdateCategoryUseCaseTest {
         when(this.categoryGateway.findById(eq(CategoryId.from(uuidMock)))).thenReturn(Optional.empty());
 
         //then
-        final DomainException domainException = assertThrows(DomainException.class, () -> this.useCase.execute(aCommand));
-        assertEquals(expectedMessageError, domainException.getErrors().get(0).message());
+        final NotFoundException domainException = assertThrows(NotFoundException.class, () -> this.useCase.execute(aCommand));
+        assertEquals(expectedMessageError, domainException.getMessage());
         assertEquals(expectedMessageErrorCount, domainException.getErrors().size());
 
         verify(this.categoryGateway, times(1)).findById(eq(CategoryId.from(uuidMock)));

@@ -3,9 +3,7 @@ package com.juliomesquita.admin.catalog.application.usecases.category.retrive.ge
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
-import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
-import com.juliomesquita.admin.catalog.domain.commom.validation.Error;
 
 import java.util.Objects;
 import java.util.function.Supplier;

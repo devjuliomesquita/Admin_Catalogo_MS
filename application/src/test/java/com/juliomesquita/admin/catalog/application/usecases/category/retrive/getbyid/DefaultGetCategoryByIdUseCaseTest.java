@@ -3,7 +3,7 @@ package com.juliomesquita.admin.catalog.application.usecases.category.retrive.ge
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
-import com.juliomesquita.admin.catalog.domain.commom.exceptions.DomainException;
+import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,16 +61,16 @@ class DefaultGetCategoryByIdUseCaseTest {
     @Test
     void givenAInvalidParamId_whenCallsGetByIdCategory_thenReturnNotFound() {
         //given
-        final CategoryId expectedId = CategoryId.from(UUID.randomUUID());
-        final String expectedMessageError = "Category not found.";
-        final int expectedMessageErrorCount = 1;
+        final CategoryId expectedId = CategoryId.from("6a3501da-cf04-49db-9a30-34a5ecf60119");
+        final String expectedMessageError = "Category with ID 6a3501da-cf04-49db-9a30-34a5ecf60119 was not found";
+        final int expectedMessageErrorCount = 0;
 
         //when
         when(this.categoryGateway.findById(eq(expectedId))).thenReturn(Optional.empty());
 
         //then
-        final DomainException domainException = assertThrows(DomainException.class, () -> this.useCase.execute(expectedId.getValue()));
-        assertEquals(expectedMessageError, domainException.getErrors().get(0).message());
+        final NotFoundException domainException = assertThrows(NotFoundException.class, () -> this.useCase.execute(expectedId.getValue()));
+        assertEquals(expectedMessageError, domainException.getMessage());
         assertEquals(expectedMessageErrorCount, domainException.getErrors().size());
         verify(this.categoryGateway, times(1)).findById(eq(expectedId));
     }
