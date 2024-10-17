@@ -371,7 +371,7 @@ public class CategoryE2ETest implements MockDslE2E {
         //then
         response
                 .andExpect(status().isNoContent())
-                .andExpect(header().string("Localtion", nullValue()));
+                .andExpect(header().string("Location", nullValue()));
         assertEquals(0, this.categoryRepository.count());
     }
 }
