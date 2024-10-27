@@ -7,14 +7,12 @@ import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQu
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
-import com.juliomesquita.admin.catalog.infrastructure.utils.SpecificationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 

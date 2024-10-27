@@ -1,14 +1,14 @@
-package com.juliomesquita.admin.catalog.domain.category;
+package com.juliomesquita.admin.catalog.domain.genre;
 
 import com.juliomesquita.admin.catalog.domain.commom.validation.Error;
 import com.juliomesquita.admin.catalog.domain.commom.validation.ValidationHandler;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Validator;
 
-public class CategoryValidator extends Validator {
+public class GenreValidator extends Validator {
     private final static int NAME_MAX_LENGTH = 255;
     private final static int NAME_MIN_LENGTH = 3;
 
-    private final Category category;
+    private final Genre genre;
 
     @Override
     public void validate() {
@@ -16,7 +16,7 @@ public class CategoryValidator extends Validator {
     }
 
     private void checkNameConstraints() {
-        final String aName = this.category.getName();
+        final String aName = this.genre.getName();
         if (aName == null) {
             this.validationHandler().append(new Error("'name' should be not null"));
             return;
@@ -34,11 +34,11 @@ public class CategoryValidator extends Validator {
     }
 
 
-    protected CategoryValidator(
+    protected GenreValidator(
             final ValidationHandler aHandler,
-            final Category aCategory
+            final Genre genre
     ) {
         super(aHandler);
-        this.category = aCategory;
+        this.genre = genre;
     }
 }
