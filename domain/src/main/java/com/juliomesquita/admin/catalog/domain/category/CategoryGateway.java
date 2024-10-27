@@ -1,6 +1,6 @@
 package com.juliomesquita.admin.catalog.domain.category;
 
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 
 import java.util.Optional;
@@ -10,7 +10,7 @@ public interface CategoryGateway {
 
     Optional<Category> findById(CategoryId categoryId);
 
-    Pagination<Category> findAll(CategorySearchQuery aQuery);
+    Pagination<Category> findAll(SearchQuery aQuery);
 
     Category update(Category aCategory);
 

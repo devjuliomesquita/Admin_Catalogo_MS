@@ -2,7 +2,7 @@ package com.juliomesquita.admin.catalog.infrastructure.category;
 
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.MySqlGatewayTest;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
@@ -200,8 +200,8 @@ class CategoryMySqlGatewayTest {
         final Category filmes = Category.newCategory("Filmes", null, true);
         final Category series = Category.newCategory("Series", null, true);
         final Category animes = Category.newCategory("Animes", null, true);
-        final CategorySearchQuery categorySearchQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, "", "createdAt", "asc");
+        final SearchQuery searchQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, "", "createdAt", "asc");
         this.categoryRepository.saveAllAndFlush(List.of(
                 CategoryEntity.from(filmes),
                 CategoryEntity.from(series),
@@ -212,7 +212,7 @@ class CategoryMySqlGatewayTest {
         assertEquals(expectedTotalItems, this.categoryRepository.count());
 
         //when
-        final Pagination<Category> categoryPagination = this.categoryMySqlGateway.findAll(categorySearchQuery);
+        final Pagination<Category> categoryPagination = this.categoryMySqlGateway.findAll(searchQuery);
 
         //second then
         assertEquals(expectedCurrentPage, categoryPagination.currentPage());
@@ -234,11 +234,11 @@ class CategoryMySqlGatewayTest {
         final int expectedTotalItems = 0;
 
         //given
-        final CategorySearchQuery categorySearchQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, "", "createdAt", "asc");
+        final SearchQuery searchQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, "", "createdAt", "asc");
 
         //when
-        final Pagination<Category> categoryPagination = this.categoryMySqlGateway.findAll(categorySearchQuery);
+        final Pagination<Category> categoryPagination = this.categoryMySqlGateway.findAll(searchQuery);
 
         //second then
         assertEquals(expectedCurrentPage, categoryPagination.currentPage());
@@ -269,9 +269,9 @@ class CategoryMySqlGatewayTest {
         assertEquals(expectedTotalItems, this.categoryRepository.count());
 
         //first when
-        final CategorySearchQuery categorySearchQueryFirst =
-                new CategorySearchQuery(0, expectedItemsPerPage, "", "createdAt", "asc");
-        final Pagination<Category> categoryPaginationFirst = this.categoryMySqlGateway.findAll(categorySearchQueryFirst);
+        final SearchQuery searchQueryFirst =
+                new SearchQuery(0, expectedItemsPerPage, "", "createdAt", "asc");
+        final Pagination<Category> categoryPaginationFirst = this.categoryMySqlGateway.findAll(searchQueryFirst);
 
         //then - response 1
         assertEquals(0, categoryPaginationFirst.currentPage());
@@ -280,9 +280,9 @@ class CategoryMySqlGatewayTest {
         assertEquals(filmes.getName(), categoryPaginationFirst.items().get(0).getName());
 
         //second when
-        final CategorySearchQuery categorySearchQuerySecond =
-                new CategorySearchQuery(2, expectedItemsPerPage, "", "name", "asc");
-        final Pagination<Category> categoryPaginationSecond = this.categoryMySqlGateway.findAll(categorySearchQuerySecond);
+        final SearchQuery searchQuerySecond =
+                new SearchQuery(2, expectedItemsPerPage, "", "name", "asc");
+        final Pagination<Category> categoryPaginationSecond = this.categoryMySqlGateway.findAll(searchQuerySecond);
 
         //then - response 2
         assertEquals(2, categoryPaginationSecond.currentPage());
@@ -291,9 +291,9 @@ class CategoryMySqlGatewayTest {
         assertEquals(series.getName(), categoryPaginationSecond.items().get(0).getName());
 
         //third when
-        final CategorySearchQuery categorySearchQueryThird =
-                new CategorySearchQuery(0, expectedItemsPerPage, "ani", "name", "asc");
-        final Pagination<Category> categoryPaginationThird = this.categoryMySqlGateway.findAll(categorySearchQueryThird);
+        final SearchQuery searchQueryThird =
+                new SearchQuery(0, expectedItemsPerPage, "ani", "name", "asc");
+        final Pagination<Category> categoryPaginationThird = this.categoryMySqlGateway.findAll(searchQueryThird);
 
         //then - response 3
         assertEquals(0, categoryPaginationThird.currentPage());

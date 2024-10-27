@@ -3,6 +3,7 @@ package com.juliomesquita.admin.catalog.domain.genre;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
 import com.juliomesquita.admin.catalog.domain.commom.abstractions.AggregateRoot;
 import com.juliomesquita.admin.catalog.domain.commom.exceptions.NotificationException;
+import com.juliomesquita.admin.catalog.domain.commom.utils.InstantUtil;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.domain.commom.validation.ValidationHandler;
 
@@ -45,9 +46,44 @@ public class Genre extends AggregateRoot<GenreId> {
 
     public static Genre newGenre(final String name, final boolean active) {
         final GenreId anId = GenreId.unique();
-        final Instant now = Instant.now();
+        final Instant now = InstantUtil.now();
         final Instant deletedAt = active ? null : now;
         return new Genre(anId, name, active, new ArrayList<>(), now, now, deletedAt);
+    }
+
+    public Genre update(
+            final String aName,
+            final boolean active,
+            final List<CategoryId> categories
+    ){
+        if(active){
+            this.activate();
+        } else {
+            this.deactivate();
+        }
+
+        this.name = aName;
+        this.updatedAt = InstantUtil.now();
+        this.categories = new ArrayList<>(categories != null ? categories : Collections.emptyList());
+        this.selfValidate();
+
+        return this;
+    }
+
+    public Genre deactivate() {
+        if (deletedAt == null) {
+            this.deletedAt = InstantUtil.now();
+        }
+        this.active = false;
+        this.updatedAt = InstantUtil.now();
+        return this;
+    }
+
+    public Genre activate() {
+        this.active = true;
+        this.updatedAt = InstantUtil.now();
+        this.deletedAt = null;
+        return this;
     }
 
 
@@ -56,10 +92,10 @@ public class Genre extends AggregateRoot<GenreId> {
         new GenreValidator(aHandler, this).validate();
     }
 
-    private void selfValidate(){
+    private void selfValidate() {
         final Notification notification = Notification.create();
         validate(notification);
-        if (notification.booleanHasError()){
+        if (notification.booleanHasError()) {
             throw new NotificationException("Failed to create a Aggregate Genre.", notification);
         }
     }

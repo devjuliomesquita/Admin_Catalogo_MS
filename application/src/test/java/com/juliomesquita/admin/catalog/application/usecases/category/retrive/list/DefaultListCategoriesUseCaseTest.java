@@ -2,7 +2,7 @@ package com.juliomesquita.admin.catalog.application.usecases.category.retrive.li
 
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +43,8 @@ class DefaultListCategoriesUseCaseTest {
         final String expectedDirection = "ASC";
         final long expectedTotalItems = categories.size();
         final int expectedTotalPages = (int) expectedTotalItems / expectedItemsPerPage;
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
         final Pagination<Category> expectedPagination =
                 new Pagination<>(categories, expectedCurrentPage, expectedItemsPerPage, categories.size(), expectedTotalPages);
 
@@ -75,8 +75,8 @@ class DefaultListCategoriesUseCaseTest {
         final String expectedDirection = "ASC";
         final long expectedTotalItems = categories.size();
         final int expectedTotalPages = expectedTotalItems == 0 ? (int) expectedTotalItems :  (int) expectedTotalItems / expectedItemsPerPage;
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
         final Pagination<Category> expectedPagination =
                 new Pagination<>(categories, expectedCurrentPage, expectedItemsPerPage, categories.size(), expectedTotalPages);
 
@@ -103,8 +103,8 @@ class DefaultListCategoriesUseCaseTest {
         final String expectedSort = "createdAt";
         final String expectedDirection = "ASC";
         final String expectedMessageError = "Gateway error";
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
 
         //when
         when(this.categoryGateway.findAll(eq(aQuery)))

@@ -3,7 +3,7 @@ package com.juliomesquita.admin.catalog.infrastructure.category;
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
 import com.juliomesquita.admin.catalog.domain.category.CategoryId;
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -41,7 +41,7 @@ public class CategoryMySqlGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+    public Pagination<Category> findAll(final SearchQuery aQuery) {
         final PageRequest pageRequest = PageRequest.of(
                 aQuery.currentPage(),
                 aQuery.itemsPerPage(),

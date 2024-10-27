@@ -5,7 +5,7 @@ import com.juliomesquita.admin.catalog.application.usecases.category.retrive.lis
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesUseCase;
 import com.juliomesquita.admin.catalog.domain.category.Category;
 import com.juliomesquita.admin.catalog.domain.category.CategoryGateway;
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryEntity;
 import com.juliomesquita.admin.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -59,8 +59,8 @@ public class ListCategoriesUseCaseIT {
         final int expectedItemsCount = 0;
         final int expectedTotalItems = 0;
 
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
 
         //when
         final Pagination<ListCategoriesOutput> response = this.useCase.execute(aQuery);
@@ -91,8 +91,8 @@ public class ListCategoriesUseCaseIT {
         final String expectedSort = "name";
         final String expectedDirection = "asc";
 
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
 
         //when
         final Pagination<ListCategoriesOutput> response = this.useCase.execute(aQuery);
@@ -123,8 +123,8 @@ public class ListCategoriesUseCaseIT {
     ) {
         final String expectedTerms = "";
 
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
 
         //when
         final Pagination<ListCategoriesOutput> response = this.useCase.execute(aQuery);
@@ -154,8 +154,8 @@ public class ListCategoriesUseCaseIT {
         final String expectedSort = "name";
         final String expectedDirection = "asc";
 
-        final CategorySearchQuery aQuery =
-                new CategorySearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
+        final SearchQuery aQuery =
+                new SearchQuery(expectedCurrentPage, expectedItemsPerPage, expectedTerms, expectedSort, expectedDirection);
 
         //when
         final Pagination<ListCategoriesOutput> response = this.useCase.execute(aQuery);

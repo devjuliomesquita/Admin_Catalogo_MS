@@ -5,12 +5,11 @@ import com.juliomesquita.admin.catalog.application.usecases.category.create.Crea
 import com.juliomesquita.admin.catalog.application.usecases.category.create.CreateCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.delete.DeleteCategoryUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.getbyid.GetCategoryByIdUseCase;
-import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesOutput;
 import com.juliomesquita.admin.catalog.application.usecases.category.retrive.list.ListCategoriesUseCase;
 import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryCommand;
 import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryOutput;
 import com.juliomesquita.admin.catalog.application.usecases.category.update.UpdateCategoryUseCase;
-import com.juliomesquita.admin.catalog.domain.commom.pagination.CategorySearchQuery;
+import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 import com.juliomesquita.admin.catalog.domain.commom.validation.Notification;
 import com.juliomesquita.admin.catalog.infrastructure.api.CategoryAPI;
@@ -77,7 +76,7 @@ public class CategoryController implements CategoryAPI {
             final String direction
     ) {
         Pagination<ListCategoriesResponse> response = this.listCategoriesUseCase
-                .execute(new CategorySearchQuery(currentPage, itemsPerPage, search, sort, direction))
+                .execute(new SearchQuery(currentPage, itemsPerPage, search, sort, direction))
                 .map(CategoryApiPresenter.presentList);
         return ResponseEntity.ok(response);
     }

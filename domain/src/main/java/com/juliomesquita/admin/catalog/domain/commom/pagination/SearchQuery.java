@@ -1,6 +1,6 @@
 package com.juliomesquita.admin.catalog.domain.commom.pagination;
 
-public record CategorySearchQuery(
+public record SearchQuery(
         int currentPage,
         int itemsPerPage,
         String terms,
