@@ -29,10 +29,12 @@ class GenreTest {
      * 12. givenInvalidNameWithLengthGreaterThan255_whenCallsUpdate_thenReturnNotificationError  - ok
      * 13. givenInvalidNameWithLengthLessThan3_whenCallsUpdate_thenReturnNotificationError - ok
      * 14. givenAValidGenreWithParamCategoriesNull_whenCallsUpdate_thenReturnOK - ok
-     * 15. givenAValidGenreWithCategoryIdValid_whenCallsAddCategories_thenReturnOk
-     * 16. givenAValidGenreWithCategoryIdNull_whenCallsAddCategories_thenReturnOk
-     * 17. givenAValidGenreWithCategoryIdValid_whenCallsRemoveCategories_thenReturnOk
-     * 18. givenAValidGenreWithCategoryIdNull_whenCallsRemoveCategories_thenReturnOk
+     * 15. givenAValidGenreWithCategoryIdValid_whenCallsAddCategory_thenReturnOk - ok
+     * 16. givenAValidGenreWithCategoryIdNull_whenCallsAddCategory_thenReturnOk - ok
+     * 17. givenAValidGenreWithCategoryIdValid_whenCallsRemoveCategory_thenReturnOk - ok
+     * 18. givenAValidGenreWithCategoryIdNull_whenCallsRemoveCategory_thenReturnOk - ok
+     * 19. givenAValidGenreWithCategoryIdValid_whenCallsAddCategories_thenReturnOk - ok
+     * 20. givenAValidGenreWithCategoryIdNull_whenCallsAddCategories_thenReturnOk - ok
      * */
 
     @Test
@@ -303,7 +305,7 @@ class GenreTest {
     }
 
     @Test
-    void givenInvalidParamNullName_whenCallsUpdate_thenReturnNotificationError(){
+    void givenInvalidParamNullName_whenCallsUpdate_thenReturnNotificationError() {
         //given
         final String expectedName = null;
         final boolean expectedActive = true;
@@ -330,7 +332,7 @@ class GenreTest {
     }
 
     @Test
-    void givenInvalidParamEmptyName_whenCallsUpdate_thenReturnNotificationError(){
+    void givenInvalidParamEmptyName_whenCallsUpdate_thenReturnNotificationError() {
         //given
         final String expectedName = "";
         final boolean expectedActive = true;
@@ -357,7 +359,7 @@ class GenreTest {
     }
 
     @Test
-    void givenInvalidNameWithLengthGreaterThan255_whenCallsUpdate_thenReturnNotificationError(){
+    void givenInvalidNameWithLengthGreaterThan255_whenCallsUpdate_thenReturnNotificationError() {
         //given
         final String expectedName = """
                 givenInvalidNameWithLengthGreaterThan255_whenCallsUpdate_thenReturnNotificationError
@@ -389,7 +391,7 @@ class GenreTest {
     }
 
     @Test
-    void givenInvalidNameWithLengthLessThan3_whenCallsUpdate_thenReturnNotificationError(){
+    void givenInvalidNameWithLengthLessThan3_whenCallsUpdate_thenReturnNotificationError() {
         //given
         final String expectedName = "    as    ";
         final boolean expectedActive = true;
@@ -413,5 +415,204 @@ class GenreTest {
         assertEquals(expectedErrorMessageTitle, exception.getMessage());
         assertEquals(expectedErrorCount, exception.getErrors().size());
         assertEquals(expectedErrorMessage, exception.getErrors().get(0).message());
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdValid_whenCallsAddCategory_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 2;
+        final CategoryId categoryFilms = CategoryId.unique();
+        final CategoryId categorySeries = CategoryId.unique();
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(0, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        aGenre.addCategory(categoryFilms);
+        final Genre aGenreUpdated = aGenre.addCategory(categorySeries);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(categoryFilms, aGenreUpdated.getCategories().get(0));
+            assertEquals(categorySeries, aGenreUpdated.getCategories().get(1));
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertTrue(expectedUpdateAt.isBefore(aGenreUpdated.getUpdatedAt()));
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdNull_whenCallsAddCategory_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 0;
+        final CategoryId categoryFilms = null;
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(0, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        final Genre aGenreUpdated = aGenre.addCategory(categoryFilms);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(aGenre.getCategories(), aGenreUpdated.getCategories());
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertEquals(expectedUpdateAt, aGenreUpdated.getUpdatedAt());
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdValid_whenCallsRemoveCategory_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 0;
+        final CategoryId categoryFilms = CategoryId.unique();
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        aGenre.addCategory(categoryFilms);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(1, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        final Genre aGenreUpdated = aGenre.removeCategory(categoryFilms);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(aGenre.getCategories(), aGenreUpdated.getCategories());
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertTrue(expectedUpdateAt.isBefore(aGenreUpdated.getUpdatedAt()));
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdNull_whenCallsRemoveCategory_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 1;
+        final CategoryId categoryFilms = CategoryId.unique();
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        aGenre.addCategory(categoryFilms);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(1, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        final Genre aGenreUpdated = aGenre.removeCategory(null);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(aGenre.getCategories(), aGenreUpdated.getCategories());
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertEquals(expectedUpdateAt,aGenreUpdated.getUpdatedAt());
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdValid_whenCallsAddCategories_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 2;
+        final CategoryId categoryFilms = CategoryId.unique();
+        final CategoryId categorySeries = CategoryId.unique();
+        final List<CategoryId> expectedListCategories = List.of(categoryFilms, categorySeries);
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(0, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        final Genre aGenreUpdated = aGenre.addCategories(expectedListCategories);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(expectedListCategories, aGenreUpdated.getCategories());
+            assertEquals(expectedListCategories.get(0), aGenreUpdated.getCategories().get(0));
+            assertEquals(expectedListCategories.get(1), aGenreUpdated.getCategories().get(1));
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertTrue(expectedUpdateAt.isBefore(aGenreUpdated.getUpdatedAt()));
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
+    }
+
+    @Test
+    void givenAValidGenreWithCategoryIdNull_whenCallsAddCategories_thenReturnOk() throws InterruptedException {
+        //given
+        final String expectedName = "Infantil";
+        final boolean expectedActive = true;
+        final int expectedCategoriesCount = 0;
+        final Genre aGenre = Genre.newGenre(expectedName, expectedActive);
+        final Instant expectedUpdateAt = aGenre.getUpdatedAt();
+
+        //first then
+        assertTrue(aGenre.isActive());
+        assertEquals(0, aGenre.getCategories().size());
+
+        //when
+        Thread.sleep(1);
+        final Genre aGenreUpdated = aGenre.addCategories(null);
+
+        //then
+        assertAll("Verify attributes of Genre", () -> {
+            assertNotNull(aGenreUpdated);
+            assertEquals(aGenre.getId(), aGenreUpdated.getId());
+            assertEquals(expectedName, aGenreUpdated.getName());
+            assertEquals(expectedActive, aGenreUpdated.isActive());
+            assertEquals(expectedCategoriesCount, aGenreUpdated.getCategories().size());
+            assertEquals(aGenre.getCreatedAt(), aGenreUpdated.getCreatedAt());
+            assertEquals(expectedUpdateAt, aGenreUpdated.getUpdatedAt());
+            assertNull(aGenreUpdated.getDeletedAt());
+        });
     }
 }

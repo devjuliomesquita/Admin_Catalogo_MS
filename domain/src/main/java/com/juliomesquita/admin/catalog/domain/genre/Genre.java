@@ -55,8 +55,8 @@ public class Genre extends AggregateRoot<GenreId> {
             final String aName,
             final boolean active,
             final List<CategoryId> categories
-    ){
-        if(active){
+    ) {
+        if (active) {
             this.activate();
         } else {
             this.deactivate();
@@ -86,10 +86,34 @@ public class Genre extends AggregateRoot<GenreId> {
         return this;
     }
 
+    public Genre addCategory(final CategoryId aCategoryId) {
+        if (aCategoryId == null) {
+            return this;
+        }
 
-    @Override
-    public void validate(final ValidationHandler aHandler) {
-        new GenreValidator(aHandler, this).validate();
+        this.categories.add(aCategoryId);
+        this.updatedAt = InstantUtil.now();
+        return this;
+    }
+
+    public Genre addCategories(final List<CategoryId> aCategories) {
+        if (aCategories == null || aCategories.isEmpty()) {
+            return this;
+        }
+
+        this.categories.addAll(aCategories);
+        this.updatedAt = InstantUtil.now();
+        return this;
+    }
+
+    public Genre removeCategory(final CategoryId aCategoryId){
+        if (aCategoryId == null) {
+            return this;
+        }
+
+        this.categories.remove(aCategoryId);
+        this.updatedAt = InstantUtil.now();
+        return this;
     }
 
     private void selfValidate() {
@@ -98,6 +122,11 @@ public class Genre extends AggregateRoot<GenreId> {
         if (notification.booleanHasError()) {
             throw new NotificationException("Failed to create a Aggregate Genre.", notification);
         }
+    }
+
+    @Override
+    public void validate(final ValidationHandler aHandler) {
+        new GenreValidator(aHandler, this).validate();
     }
 
     private Genre(
