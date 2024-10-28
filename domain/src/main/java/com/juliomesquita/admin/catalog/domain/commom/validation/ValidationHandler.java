@@ -7,7 +7,7 @@ public interface ValidationHandler {
 
     ValidationHandler append(ValidationHandler anHandler);
 
-    ValidationHandler validate(Validation anValidation);
+    <T> T validate(Validation<T> anValidation);
 
     List<Error> getErrors();
 
@@ -23,7 +23,7 @@ public interface ValidationHandler {
 
     }
 
-    interface Validation {
-        void validate();
+    interface Validation<T> {
+        T validate();
     }
 }

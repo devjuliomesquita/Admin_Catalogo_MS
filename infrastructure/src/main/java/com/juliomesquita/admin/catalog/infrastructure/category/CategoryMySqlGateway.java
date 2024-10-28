@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -81,5 +82,11 @@ public class CategoryMySqlGateway implements CategoryGateway {
         if (this.categoryRepository.existsById(anId)) {
             this.categoryRepository.deleteById(anId);
         }
+    }
+
+    @Override
+    public List<CategoryId> existsByIds(Iterable<CategoryId> ids) {
+        //TODO Implementar quando chegar na camada de infrastructure
+        return List.of();
     }
 }

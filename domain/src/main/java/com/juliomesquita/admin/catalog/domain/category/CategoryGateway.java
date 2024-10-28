@@ -3,6 +3,7 @@ package com.juliomesquita.admin.catalog.domain.category;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.SearchQuery;
 import com.juliomesquita.admin.catalog.domain.commom.pagination.Pagination;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CategoryGateway {
@@ -15,4 +16,6 @@ public interface CategoryGateway {
     Category update(Category aCategory);
 
     void deleteById(CategoryId categoryId);
+
+    List<CategoryId> existsByIds(Iterable<CategoryId> ids);
 }
